@@ -7,7 +7,7 @@
 //
 
 #import "JWTAlgorithmRS256.h"
-#import "MF_Base64Additions.h"
+#import <Base64/MF_Base64Additions.h>
 #import <CommonCrypto/CommonCrypto.h>
 
 @implementation JWTAlgorithmRS256 {
@@ -32,7 +32,17 @@
     if (identity && trust) {
         SecKeyRef privateKey;
         SecIdentityCopyPrivateKey(identity, &privateKey);
-        return PKCSSignBytesSHA256withRSA(theStringData, privateKey);
+        NSData *signedBytes = PKCSSignBytesSHA256withRSA(theStringData, privateKey);
+        if (privateKey != NULL) {
+            CFRelease(privateKey);
+        }
+        if (identity != NULL) {
+            CFRelease(identity);
+        }
+        if (trust != NULL) {
+            CFRelease(trust);
+        }
+        return signedBytes;
     } else {
         return nil;
     }
@@ -87,6 +97,9 @@ BOOL PKCSVerifyBytesSHA256withRSA(NSData* plainData, NSData* signature, SecKeyRe
     size_t hashBytesSize = CC_SHA256_DIGEST_LENGTH;
     uint8_t* hashBytes = malloc(hashBytesSize);
     if (!CC_SHA256([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
+        if (hashBytes) {
+            free(hashBytes);
+        }
         return false;
     }
 
@@ -111,6 +124,12 @@ NSData* PKCSSignBytesSHA256withRSA(NSData* plainData, SecKeyRef privateKey) {
     size_t hashBytesSize = CC_SHA256_DIGEST_LENGTH;
     uint8_t* hashBytes = malloc(hashBytesSize);
     if (!CC_SHA256([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
+        if (hashBytes) {
+            free(hashBytes);
+        }
+        if (signedHashBytes) {
+            free(signedHashBytes);
+        }
         return nil;
     }
 

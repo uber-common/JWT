@@ -7,7 +7,7 @@
 //
 
 #import "JWTAlgorithmRSBase.h"
-#import "MF_Base64Additions.h"
+#import <Base64/MF_Base64Additions.h>
 #import <CommonCrypto/CommonCrypto.h>
 
 @interface JWTAlgorithmRSBase()
@@ -20,11 +20,15 @@
 @synthesize privateKeyCertificatePassphrase;
 
 - (size_t)ccSHANumberDigestLength {
-    return 0;
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
 }
 
 - (uint32_t)secPaddingPKCS1SHANumber {
-    return 0;
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
 }
 
 #pragma mark - JWTAlgorithm

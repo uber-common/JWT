@@ -18,11 +18,15 @@
 @implementation JWTAlgorithmHSBase
 
 - (size_t)ccSHANumberDigestLength {
-    return 0;
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
 }
 
 - (uint32_t)ccHmacAlgSHANumber {
-    return 0;
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
 }
 
 - (NSString *)name;
