@@ -196,16 +196,20 @@ static NSString *JWTErrorDomain = @"com.karma.jwt";
     NSString *headerSegment = [self encodeSegment:[allHeaders copy] withError:theError];
     
     if (!headerSegment) {
-        // encode header segment error
-        *theError = [self errorWithCode:JWTEncodingHeaderError];
+        if (theError) {
+            // encode header segment error
+            *theError = [self errorWithCode:JWTEncodingHeaderError];
+        }
         return nil;
     }
     
     NSString *payloadSegment = [self encodeSegment:thePayload withError:theError];
     
     if (!payloadSegment) {
-        // encode payment segment error
-        *theError = [self errorWithCode:JWTEncodingPayloadError];
+        if (theError) {
+            // encode payment segment error
+            *theError = [self errorWithCode:JWTEncodingPayloadError];
+        }
         return nil;
     }
     
@@ -281,8 +285,10 @@ static NSString *JWTErrorDomain = @"com.karma.jwt";
     NSArray *parts = [theMessage componentsSeparatedByString:@"."];
     
     if (parts.count < 3) {
-        // generate error?
-        *theError = [self errorWithCode:JWTInvalidFormatError];
+        if (theError) {
+            // generate error
+            *theError = [self errorWithCode:JWTInvalidFormatError];
+        }
         return nil;
     }
     
@@ -703,8 +709,10 @@ static NSString *JWTErrorDomain = @"com.karma.jwt";
         NSArray *parts = [theMessage componentsSeparatedByString:@"."];
     
     if (parts.count < 3) {
-        // generate error?
-        *theError = [JWT errorWithCode:JWTInvalidFormatError];
+        if (theError) {
+            // generate error?
+            *theError = [JWT errorWithCode:JWTInvalidFormatError];
+        }
         return nil;
     }
     
@@ -844,7 +852,9 @@ static NSString *JWTErrorDomain = @"com.karma.jwt";
         else {
             //If a whitelist is passed in, ensure the chosen algorithm is allowed
             if (![theWhitelist containsObject:theAlgorithmName]) {
-                *theError = [JWT errorWithCode:JWTBlacklistedAlgorithmError];
+                if (theError) {
+                    *theError = [JWT errorWithCode:JWTBlacklistedAlgorithmError];
+                }
                 return nil;
             }
         }
